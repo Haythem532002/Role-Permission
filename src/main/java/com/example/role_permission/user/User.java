@@ -12,8 +12,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.security.Principal;
 import java.time.LocalDateTime;
 import java.util.Collection;
-import java.util.Date;
-import java.util.List;
 
 
 @Entity
@@ -23,12 +21,16 @@ import java.util.List;
 public class User implements Principal, UserDetails {
     @Id @GeneratedValue
     Integer id;
-
+    String firstName;
+    String lastName;
+    @Column(unique = true)
     String email;
     String password;
     boolean enabled;
-    boolean isExpired;
     boolean isLocked;
+
+    @Enumerated(EnumType.STRING)
+    Role role;
 
     @CreatedDate
     @Column(updatable = false,nullable = false)
@@ -39,12 +41,12 @@ public class User implements Principal, UserDetails {
 
     @Override
     public String getName() {
-        return "";
+        return email;
     }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of();
+        return role.getAuthorities();
     }
 
     @Override
@@ -59,7 +61,7 @@ public class User implements Principal, UserDetails {
 
     @Override
     public boolean isAccountNonExpired() {
-        return !isExpired;
+        return true;
     }
 
     @Override
@@ -75,5 +77,9 @@ public class User implements Principal, UserDetails {
     @Override
     public boolean isEnabled() {
         return enabled;
+    }
+
+    public String fullName() {
+        return firstName+" "+lastName;
     }
 }
