@@ -1,0 +1,41 @@
+spring:
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: create-drop
+    properties:
+      hibernate:
+        format_sql: true
+    database: postgresql
+  datasource:
+    url: jdbc:postgresql://localhost:5432/postgres/roles_permissions
+    username: postgres
+    password: haythem
+    driver-class-name: org.postgresql.Driver
+  mail:
+    host: localhost
+    username: haythem
+    password: haythem
+    properties:
+      mail:
+        smtp:
+          trust: "*"
+        auth: true
+        starttls:
+          enable: true
+        connectiontimeout: 5000
+        timeout: 3000
+        writetimeout: 5000
+
+
+application:
+  security:
+    jwt:
+      secret-key: 91meaCW+8lFIvxbZNgTDpe/mV8O0Kjd0YYgAkB+mgHU=
+      expiration: 8640000
+  mailing:
+    frontend:
+      activation-url: http://localhost:4200/activate-account
+
+server:
+  port: 8050
