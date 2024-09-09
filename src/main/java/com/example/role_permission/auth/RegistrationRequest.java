@@ -1,5 +1,6 @@
 package com.example.role_permission.auth;
 
+import com.example.role_permission.user.Role;
 import jakarta.validation.constraints.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -20,5 +21,7 @@ public class RegistrationRequest {
     @NotBlank(message = "Password is Mandatory")
     @Size(min = 8 , message = "Password should be 8 characters minimum")
     String password;
+
+    Role role;
 
 }

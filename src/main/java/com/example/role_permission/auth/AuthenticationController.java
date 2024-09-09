@@ -2,6 +2,7 @@ package com.example.role_permission.auth;
 
 
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.mail.MessagingException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -19,7 +20,7 @@ public class AuthenticationController {
     @ResponseStatus(HttpStatus.ACCEPTED)
     public ResponseEntity<?> register(
         @RequestBody @Valid RegistrationRequest request
-    ) {
+    ) throws MessagingException {
         service.register(request);
         return ResponseEntity.accepted().build();
     }
@@ -33,7 +34,7 @@ public class AuthenticationController {
     @GetMapping("/activate-account")
     public void confirm(
             @RequestParam String token
-    ) {
+    ) throws MessagingException {
         service.activateAccount(token);
     }
 }

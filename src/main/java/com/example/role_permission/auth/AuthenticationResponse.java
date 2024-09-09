@@ -1,5 +1,8 @@
 package com.example.role_permission.auth;
 
+import lombok.*;
+
+@Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
 public class AuthenticationResponse {
-    String token;
+    private String token;
 }

@@ -3,6 +3,7 @@ package com.example.role_permission.user;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
+import lombok.experimental.SuperBuilder;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -15,7 +16,8 @@ import java.util.Collection;
 
 
 @Entity
-@Getter @Setter @AllArgsConstructor @NoArgsConstructor @Builder
+@Getter @Setter @AllArgsConstructor @NoArgsConstructor @SuperBuilder
+@Table(name = "_user")
 @EntityListeners(AuditingEntityListener.class)
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class User implements Principal, UserDetails {
@@ -34,10 +36,10 @@ public class User implements Principal, UserDetails {
 
     @CreatedDate
     @Column(updatable = false,nullable = false)
-    LocalDateTime created;
+    LocalDateTime createdDate;
     @LastModifiedDate
     @Column(insertable = false)
-    LocalDateTime lastModified;
+    LocalDateTime lastModifiedDate;
 
     @Override
     public String getName() {
