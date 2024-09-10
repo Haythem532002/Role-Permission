@@ -93,8 +93,8 @@ public class AuthenticationService {
                 )
         );
         var claims = new HashMap<String,Object>();
-        var user = (User) auth.getPrincipal();
-        String jwtToken = jwtService.buildToken(claims,user);
+        var user = ((User) auth.getPrincipal());
+        var jwtToken = jwtService.buildToken(claims,user);
         return AuthenticationResponse
                 .builder()
                 .token(jwtToken)

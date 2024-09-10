@@ -1,19 +1,21 @@
 spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/roles_permissions
+    username: postgres
+    password: haythem
+    driver-class-name: org.postgresql.Driver
   jpa:
     show-sql: true
     hibernate:
-      ddl-auto: create-drop
+      ddl-auto: update
     properties:
       hibernate:
         format_sql: true
     database: postgresql
-  datasource:
-    url: jdbc:postgresql://localhost:5432/postgres/roles_permissions
-    username: postgres
-    password: haythem
-    driver-class-name: org.postgresql.Driver
+
   mail:
     host: localhost
+    port: 1025
     username: haythem
     password: haythem
     properties:
