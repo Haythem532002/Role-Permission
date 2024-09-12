@@ -49,6 +49,7 @@ public class SecurityConfig {
                                 )
                                 .permitAll()
 
+
                                 .requestMatchers("/api/v1/manager/**")
                                 .hasAnyRole(ADMIN.name(),MANAGER.name())
                                 .requestMatchers(HttpMethod.GET,"/api/v1/manager/**")
