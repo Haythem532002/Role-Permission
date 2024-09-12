@@ -9,12 +9,12 @@ import java.time.LocalDateTime;
 @Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
 @Entity
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class Token {
+public class ActivationCode {
     @GeneratedValue @Id
     Integer id;
 
     @Column(unique = true)
-    String token;
+    String code;
     LocalDateTime createdAt;
     LocalDateTime expiresAt;
     LocalDateTime validatedAt;

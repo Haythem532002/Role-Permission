@@ -3,8 +3,8 @@ package com.example.role_permission.auth;
 import com.example.role_permission.email.EmailService;
 import com.example.role_permission.email.EmailTemplateName;
 import com.example.role_permission.security.JwtService;
-import com.example.role_permission.user.Token;
-import com.example.role_permission.user.TokenRepository;
+import com.example.role_permission.user.ActivationCode;
+import com.example.role_permission.user.ActivationCodeRepository;
 import com.example.role_permission.user.User;
 import com.example.role_permission.user.UserRepository;
 import jakarta.mail.MessagingException;
@@ -25,7 +25,7 @@ import java.util.HashMap;
 public class AuthenticationService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
-    private final TokenRepository tokenRepository;
+    private final ActivationCodeRepository activationCodeRepository;
     private final EmailService emailService;
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
@@ -50,27 +50,27 @@ public class AuthenticationService {
     }
 
     private void sendValidationEmail(User user) throws MessagingException {
-        var newToken = generateAndSaveActivationToken(user);
+        var code = generateAndSaveActivationCode(user);
         emailService.sendEmail(
                 user.getEmail(),
                 user.fullName(),
                 EmailTemplateName.ACTIVATE_ACCOUNT,
                 confirmationUrl,
-                newToken,
+                code,
                 "Account Activation"
         );
     }
 
-    private String generateAndSaveActivationToken(User user) {
+    private String generateAndSaveActivationCode(User user) {
         var token = generateAndSaveActivationCode(6);
-        var tokenBuild = Token
+        var tokenBuild = ActivationCode
                 .builder()
-                .token(token)
+                .code(token)
                 .createdAt(LocalDateTime.now())
                 .expiresAt(LocalDateTime.now().plusMinutes(15)).user(user)
                 .build()
                 ;
-        tokenRepository.save(tokenBuild);
+        activationCodeRepository.save(tokenBuild);
         return token;
     }
 
@@ -102,8 +102,8 @@ public class AuthenticationService {
                 ;
     }
 
-    public void activateAccount(String token) throws MessagingException {
-        Token tokenRepo = tokenRepository.findByToken(token).orElseThrow(
+    public void activateAccount(String code) throws MessagingException {
+        ActivationCode tokenRepo = activationCodeRepository.findByCode(code).orElseThrow(
                 () -> new RuntimeException("Invalid Token")
         );
         if(LocalDateTime.now().isAfter(tokenRepo.getExpiresAt())) {
@@ -117,6 +117,6 @@ public class AuthenticationService {
         userRepository.save(user);
 
         tokenRepo.setValidatedAt(LocalDateTime.now());
-        tokenRepository.save(tokenRepo);
+        activationCodeRepository.save(tokenRepo);
     }
 }
