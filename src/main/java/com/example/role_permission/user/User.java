@@ -1,5 +1,6 @@
 package com.example.role_permission.user;
 
+import com.example.role_permission.token.Token;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -13,6 +14,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.security.Principal;
 import java.time.LocalDateTime;
 import java.util.Collection;
+import java.util.List;
 
 
 @Entity
@@ -40,6 +42,9 @@ public class User implements Principal, UserDetails {
     @LastModifiedDate
     @Column(insertable = false)
     LocalDateTime lastModifiedDate;
+
+    @OneToMany(mappedBy = "user")
+    List<Token> tokens;
 
     @Override
     public String getName() {

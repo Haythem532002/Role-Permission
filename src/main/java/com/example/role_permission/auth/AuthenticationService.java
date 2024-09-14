@@ -3,6 +3,9 @@ package com.example.role_permission.auth;
 import com.example.role_permission.email.EmailService;
 import com.example.role_permission.email.EmailTemplateName;
 import com.example.role_permission.security.JwtService;
+import com.example.role_permission.token.Token;
+import com.example.role_permission.token.TokenRepository;
+import com.example.role_permission.token.TokenType;
 import com.example.role_permission.user.ActivationCode;
 import com.example.role_permission.user.ActivationCodeRepository;
 import com.example.role_permission.user.User;
@@ -19,6 +22,9 @@ import org.springframework.stereotype.Service;
 import java.security.SecureRandom;
 import java.time.LocalDateTime;
 import java.util.HashMap;
+import java.util.List;
+
+import static com.example.role_permission.token.TokenType.BEARER;
 
 @Service
 @RequiredArgsConstructor
@@ -29,6 +35,7 @@ public class AuthenticationService {
     private final EmailService emailService;
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
+    private final TokenRepository tokenRepository;
 
     @Value("${application.mailing.frontend.activation-url}")
     private String confirmationUrl;
@@ -95,11 +102,31 @@ public class AuthenticationService {
         var claims = new HashMap<String,Object>();
         var user = ((User) auth.getPrincipal());
         var jwtToken = jwtService.buildToken(claims,user);
+        revokeAllTokens(user);
+        var token = Token
+                .builder()
+                .tokenType(BEARER)
+                .token(jwtToken)
+                .user(user)
+                .expired(false)
+                .revoked(false)
+                .build();
+        tokenRepository.save(token);
         return AuthenticationResponse
                 .builder()
                 .token(jwtToken)
                 .build()
                 ;
+    }
+
+    private void revokeAllTokens(User user) {
+        List<Token> tokens = tokenRepository.findAllValidTokensByUser(user.getId());
+        if(tokens.isEmpty()) return;
+        tokens.forEach(token -> {
+            token.setExpired(true);
+            token.setRevoked(true);
+        });
+        tokenRepository.saveAll(tokens);
     }
 
     public void activateAccount(String code) throws MessagingException {
